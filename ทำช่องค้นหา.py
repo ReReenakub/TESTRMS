@@ -13,7 +13,7 @@ root = tk.Tk()
 root.title("Game Search")
 
 # รายชื่อเกม
-games = ["ROV", "PUBG", "VALORANT", "FREEFIRE", "ACE RAZER"]
+games = ["ROV", "PUBG", "VALORANT", "FREEFIRE", "ACE RACER"]
 
 # สร้าง Combobox แบบ Autocomplete
 choice = tk.StringVar()
