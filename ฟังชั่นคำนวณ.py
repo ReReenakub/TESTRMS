@@ -18,16 +18,16 @@ def calculate_packages():
 
     sorted_indices = np.argsort(prices)[::-1]
     sorted_prices = prices[sorted_indices]
-    sorted_coupons = UC_Price[sorted_indices]
+    sorted_UC = UC_Price[sorted_indices]
 
     budget = initial_budget
     spent_prices = []
     Total_UC = 0
-    for price, coupon in zip(sorted_prices, sorted_coupons):
+    for price, UC in zip(sorted_prices, sorted_UC):
         if budget >= price:
             budget -= price
             spent_prices.append(price)
-            Total_UC += coupon
+            Total_UC += UC
 
     result_message = (
         f"แพ็คที่ใช้แนะนำ: {spent_prices}\n"
