@@ -12,10 +12,9 @@ def autocomplete(event):
 root = tk.Tk()
 root.title("Game Search")
 
-# รายชื่อเกม
+#รายชื่อเกม
 games = ["ROV", "PUBG", "VALORANT", "FREEFIRE", "ACE RACER"]
 
-# สร้าง Combobox แบบ Autocomplete
 choice = tk.StringVar()
 combo = ttk.Combobox(root, width=30, font=('Helvetica', 10), textvariable=choice)
 combo['values'] = games
