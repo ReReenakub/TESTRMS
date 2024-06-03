@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 import tkinter as tk
-
+game = 'Pubg'
 df = pd.read_csv('Price.csv')
-prices = df['Pubg_baht'].values
+prices = df[f"{game}_baht"].values
 UC_Price = df['UC'].values
 
 def calculate_packages():
@@ -51,13 +51,15 @@ root.configure(bg="#f0f0f0")
 frame = tk.Frame(root, bg="#f0f0f0")
 frame.pack(pady=20, padx=20, fill="both", expand=True)
 
-budget_label = tk.Label(frame, text="ป้อนงบประมาณ (บาท):", bg="#f0f0f0")
+font = ("Niramit", 12)
+
+budget_label = tk.Label(frame, text="ป้อนงบประมาณ (บาท):", bg="#f0f0f0", font=font)
 budget_label.pack(pady=5)
 
-budget_entry = tk.Entry(frame, width=20)  # ลดความกว้างของช่องป้อน
+budget_entry = tk.Entry(frame, width=20, font=font)
 budget_entry.pack(pady=5)
 
-calculate_button = tk.Button(frame, text="คำนวณ", command=calculate_packages, bg="#4CAF50", fg="white")
+calculate_button = tk.Button(frame, text="คำนวณ", command=calculate_packages, bg="#4CAF50", fg="white", font=font)
 calculate_button.pack(pady=5)
 
 canvas = tk.Canvas(frame, bg="#ffffff")
@@ -66,7 +68,7 @@ canvas.pack(pady=20, padx=10, fill="both", expand=True)
 scrollbar = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
 scrollbar.pack(side="right", fill="y")
 
-result_text = tk.Text(canvas, yscrollcommand=scrollbar.set, wrap="word", bg="#ffffff", font=("Arial", 12))
+result_text = tk.Text(canvas, yscrollcommand=scrollbar.set, wrap="word", bg="#ffffff", font=font)
 result_text.pack(side="left", fill="both", expand=True)
 
 canvas.create_window((0, 0), window=result_text, anchor="nw")
@@ -74,5 +76,4 @@ canvas.configure(yscrollcommand=scrollbar.set)
 
 result_text.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
-# เริ่มต้นโปรแกรม
 root.mainloop()
