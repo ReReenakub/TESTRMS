@@ -39,7 +39,6 @@ print("ใกล้เคียงที่สุดคือ:",initial_budget -
 print("จำนวน UC ที่ได้:",total_coupons,'UC')
 spent_prices_str = '+'.join(map(str, spent_prices))
 print(spent_prices_str)
-pyperclip.copy(str(spent_prices_str))
 
 print("แพ็คที่ใช้:",spent_coupons0,'UC')
 print("ใกล้เคียงที่สุดคือ:",initial_budget - budgeta,'บาท')
