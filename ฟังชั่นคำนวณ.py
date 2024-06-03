@@ -29,9 +29,14 @@ def calculate_packages():
             spent_prices.append(price)
             Total_UC += UC
 
+    spent_prices_int = [int(price) for price in spent_prices]
+    Total_UC_int = int(Total_UC)
+    initial_budget_int = int(initial_budget)
+    budget_int = int(budget)
+
     result_message = (
-        f"แพ็คที่ใช้แนะนำ: {spent_prices}\n"
-        f"แอดแนะนำแพ็ค {initial_budget - budget} บาทได้ {Total_UC} UC ครับ"
+        f"แพ็คที่ใช้แนะนำ: {spent_prices_int}\n"
+        f"แอดแนะนำแพ็ค {initial_budget_int - budget_int} บาทได้ {Total_UC_int} UC ครับ"
     )
     result_text.configure(state="normal")
     result_text.delete("1.0", tk.END)
