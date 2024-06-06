@@ -39,9 +39,10 @@ def calculate_packages():
                 spent_UC.append(UC)
                 Total_UC += UC
 
-        print(spent_UC)
-        print(int_Budget - budget)
-        print(Total_UC)
+        print([int(uc) for uc in spent_UC])
+        print(int(int_Budget - budget))
+        print(int(Total_UC))
+
 
 
 root = tk.Tk()
