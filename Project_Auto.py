@@ -31,18 +31,18 @@ def calculate_packages():
         sorted_UC = UC_Price[sorted_indices]
 
         budget = int_Budget
-        spent_prices = []
         spent_UC = []
         Total_UC = 0
         for price, UC in zip(sorted_prices, sorted_UC):
             if budget >= price:
                 budget -= price
-                spent_UC.append(price)
+                spent_UC.append(UC)
                 Total_UC += UC
 
         print(spent_UC)
         print(int_Budget - budget)
         print(Total_UC)
+
 
 root = tk.Tk()
 root.title('บอทเกม')
