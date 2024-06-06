@@ -21,6 +21,7 @@ def autocomplete(event):
 
 def calculate_packages():
     Game = choice.get()
+    amount = UID.get()
     if Game == 'PUBG':
         df = pd.read_csv('Price.csv')
         prices = df['PUBG_baht'].values
@@ -42,6 +43,28 @@ def calculate_packages():
         print([int(uc) for uc in spent_UC])
         print(int(int_Budget - budget))
         print(int(Total_UC))
+        pyautogui.click(x=1412, y=77)
+        pyperclip.copy('A')
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(Game)
+        pyautogui.press('down')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(int_Budget - budget)
+        pyautogui.write(['tab'] * 2)
+        pyautogui.press('Enter')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.press('down')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(int_Budget)
+        pyautogui.write(['tab'] * 17)
+        pyautogui.write([int(uc) for uc in spent_UC])
+        pyautogui.write(['tab'] * 11)
+        pyautogui.write(amount)
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write('Ree')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(Total_UC)
 
 
 
