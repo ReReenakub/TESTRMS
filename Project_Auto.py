@@ -19,6 +19,30 @@ def autocomplete(event):
     else:
         combo['values'] = games
 
+def calculate_packages():
+    Game = choice.get()
+    if Game == 'PUBG':
+        df = pd.read_csv('Price.csv')
+        prices = df['PUBG_baht'].values
+        UC_Price = df['PUBG_currency'].values
+        int_Budget = int(Price.get())
+        sorted_indices = np.argsort(prices)[::-1]
+        sorted_prices = prices[sorted_indices]
+        sorted_UC = UC_Price[sorted_indices]
+
+        budget = int_Budget
+        spent_prices = []
+        spent_UC = []
+        Total_UC = 0
+        for price, UC in zip(sorted_prices, sorted_UC):
+            if budget >= price:
+                budget -= price
+                spent_UC.append(price)
+                Total_UC += UC
+
+        print(spent_UC)
+        print(int_Budget - budget)
+        print(Total_UC)
 
 root = tk.Tk()
 root.title('บอทเกม')
