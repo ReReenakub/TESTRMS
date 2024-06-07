@@ -6,11 +6,13 @@ import pyautogui
 import pyperclip
 
 
+# Function to clear text entries
 def deletetext():
     et1.delete(0, tk.END)
     et2.delete(0, tk.END)
 
 
+# Function to handle autocomplete for the game selection
 def autocomplete(event):
     search_term = combo.get()
     if search_term:
@@ -19,14 +21,34 @@ def autocomplete(event):
     else:
         combo['values'] = games
 
+
 def calculate_packages():
+    df = pd.read_csv('Price.csv')
     Game = choice.get()
-    amount = UID.get()
+    input_text = UID.get()
+
     if Game == 'PUBG':
-        df = pd.read_csv('Price.csv')
-        prices = df['PUBG_baht'].values
-        UC_Price = df['PUBG_currency'].values
+        def split_and_clean_text(input_text):
+            try:
+                name, uid = input_text.split('(')
+                name = name.strip()
+                uid = uid.replace(')', '').strip()
+            except ValueError:
+                raise ValueError("Input text must be in the format 'Name(Number)'")
+            return name, uid
+
+        try:
+            name, uid = split_and_clean_text(input_text)
+        except ValueError as e:
+            print(e)
+            return
+
+        df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['PUBG_baht', 'PUBG_currency'])
+        prices = df['PUBG_baht'].astype(int).values
+        UC_Price = df['PUBG_currency'].astype(int).values
+
         int_Budget = int(Price.get())
+
         sorted_indices = np.argsort(prices)[::-1]
         sorted_prices = prices[sorted_indices]
         sorted_UC = UC_Price[sorted_indices]
@@ -40,32 +62,76 @@ def calculate_packages():
                 spent_UC.append(UC)
                 Total_UC += UC
 
-        print([int(uc) for uc in spent_UC])
-        print(int(int_Budget - budget))
-        print(int(Total_UC))
-        pyautogui.click(x=1412, y=77)
+        spent_UC = [int(uc) for uc in spent_UC]
+        remaining_budget = int_Budget - budget
+
+        pyautogui.click(x=1226, y=234)
         pyperclip.copy('A')
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write(Game)
         pyautogui.press('down')
         pyautogui.write(['tab'] * 1)
-        pyautogui.write(int_Budget - budget)
+        pyautogui.write(str(remaining_budget))
         pyautogui.write(['tab'] * 2)
         pyautogui.press('Enter')
         pyautogui.write(['tab'] * 1)
         pyautogui.press('down')
         pyautogui.write(['tab'] * 1)
-        pyautogui.write(int_Budget)
+        pyautogui.write(str(int_Budget))
         pyautogui.write(['tab'] * 17)
-        pyautogui.write([int(uc) for uc in spent_UC])
+        pyautogui.write(str(spent_UC))
         pyautogui.write(['tab'] * 11)
-        pyautogui.write(amount)
-        pyautogui.write(['tab'] * 1)
-        pyautogui.write('Ree')
-        pyautogui.write(['tab'] * 1)
-        pyautogui.write(Total_UC)
+        pyautogui.write(uid)
+        pyautogui.write(['tab'] * 2)
+        pyautogui.write(str(Total_UC))
+        pyautogui.write(' UC')
 
+    elif Game == 'ROV':
+        df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['ROV_baht', 'ROV_currency'])
+        prices = df['ROV_baht'].astype(int).values
+        Coupon_Price = df['ROV_currency'].astype(int).values
+
+        int_Budget = int(Price.get())
+
+        sorted_indices = np.argsort(prices)[::-1]
+        sorted_prices = prices[sorted_indices]
+        sorted_Coupon = Coupon_Price[sorted_indices]
+
+        budget = int_Budget
+        spent_Coupon = []
+        Total_Coupon = 0
+        for price, Coupon in zip(sorted_prices, sorted_Coupon):
+            if budget >= price:
+                budget -= price
+                spent_Coupon.append(Coupon)
+                Total_Coupon += Coupon
+
+        spent_Coupon = [int(uc) for uc in spent_Coupon]
+        remaining_budget = int_Budget - budget
+
+        pyautogui.click(x=1226, y=234)
+        pyperclip.copy('A')
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(Game)
+        pyautogui.press('down')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(str(remaining_budget))
+        pyautogui.write(['tab'] * 2)
+        pyautogui.press('Enter')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.press('down')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(str(int_Budget))
+        pyautogui.write(['tab'] * 17)
+        pyautogui.write(str(spent_Coupon))
+        pyautogui.write(['tab'] * 11)
+        pyautogui.write(input_text)
+        pyautogui.write(['tab'] * 2)
+        pyautogui.write(str(Total_Coupon))
+        pyperclip.copy(' คูปอง')
+        pyautogui.hotkey('ctrl', 'v')
 
 
 root = tk.Tk()
@@ -92,4 +158,5 @@ et2.grid(row=2, column=1)
 tk.Button(text='ยืนยัน', font=30, width=15, command=calculate_packages).grid(row=4, column=0, sticky=tk.W)
 tk.Button(text='ลบข้อมูล', font=30, width=15, command=deletetext).grid(row=4, column=1, sticky=tk.E)
 
+# Start the main loop
 root.mainloop()
