@@ -5,14 +5,10 @@ from tkinter import ttk
 import pyautogui
 import pyperclip
 
-
-# Function to clear text entries
 def deletetext():
     et1.delete(0, tk.END)
     et2.delete(0, tk.END)
 
-
-# Function to handle autocomplete for the game selection
 def autocomplete(event):
     search_term = combo.get()
     if search_term:
@@ -83,7 +79,10 @@ def calculate_packages():
         pyautogui.write(str(spent_UC))
         pyautogui.write(['tab'] * 11)
         pyautogui.write(uid)
-        pyautogui.write(['tab'] * 2)
+        pyautogui.write(['tab'] * 1)
+        pyperclip.copy(name)
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.write(['tab'] * 1)
         pyautogui.write(str(Total_UC))
         pyautogui.write(' UC')
 
@@ -134,6 +133,7 @@ def calculate_packages():
         pyautogui.hotkey('ctrl', 'v')
 
 
+
 root = tk.Tk()
 root.title('บอทเกม')
 
@@ -142,7 +142,7 @@ UID = tk.StringVar()
 et1 = tk.Entry(font=30, width=30, textvariable=UID)
 et1.grid(row=0, column=1)
 
-games = ["ROV", "PUBG", "VALORANT", "FREEFIRE", "ACE RACER"]
+games = ["ROV", "PUBG", "VALORANT", "FREEFIRE", "GENSHIN"]
 tk.Label(text='เลือกเกม', padx=10, font=30).grid(row=1, sticky=tk.W)
 choice = tk.StringVar()
 combo = ttk.Combobox(root, width=28, font=30, textvariable=choice)
@@ -158,5 +158,4 @@ et2.grid(row=2, column=1)
 tk.Button(text='ยืนยัน', font=30, width=15, command=calculate_packages).grid(row=4, column=0, sticky=tk.W)
 tk.Button(text='ลบข้อมูล', font=30, width=15, command=deletetext).grid(row=4, column=1, sticky=tk.E)
 
-# Start the main loop
 root.mainloop()
