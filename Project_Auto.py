@@ -4,6 +4,7 @@ import numpy as np
 from tkinter import ttk
 import pyautogui
 import pyperclip
+import keyboard
 
 def deletetext():
     et1.delete(0, tk.END)
@@ -22,15 +23,20 @@ def calculate_packages():
     df = pd.read_csv('Price.csv')
     Game = choice.get()
     input_text = UID.get()
+    keyboard.wait('ctrl+c')
 
     if Game == 'PUBG':
         def split_and_clean_text(input_text):
-            try:
-                name, uid = input_text.split('(')
-                name = name.strip()
-                uid = uid.replace(')', '').strip()
-            except ValueError:
-                raise ValueError("Input text must be in the format 'Name(Number)'")
+            if '(' in input_text and ')' in input_text:
+                try:
+                    name, uid = input_text.split('(')
+                    name = name.strip()
+                    uid = uid.replace(')', '').strip()
+                except ValueError:
+                    pass
+            else:
+                name = ""
+                uid = "1"
             return name, uid
 
         try:
@@ -132,6 +138,52 @@ def calculate_packages():
         pyperclip.copy(' คูปอง')
         pyautogui.hotkey('ctrl', 'v')
 
+    elif Game == 'VALORANT':
+        df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['VALORANT_baht', 'VALORANT_currency'])
+        prices = df['VALORANT_baht'].astype(int).values
+        Coupon_Price = df['VALORANT_currency'].astype(int).values
+
+        int_Budget = int(Price.get())
+
+        sorted_indices = np.argsort(prices)[::-1]
+        sorted_prices = prices[sorted_indices]
+        sorted_Coupon = Coupon_Price[sorted_indices]
+
+        budget = int_Budget
+        spent_Coupon = []
+        Total_Coupon = 0
+        for price, Coupon in zip(sorted_prices, sorted_Coupon):
+            if budget >= price:
+                budget -= price
+                spent_Coupon.append(Coupon)
+                Total_Coupon += Coupon
+
+        spent_Coupon = [int(uc) for uc in spent_Coupon]
+        remaining_budget = int_Budget - budget
+
+        pyautogui.click(x=1226, y=234)
+        pyperclip.copy('A')
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(Game)
+        pyautogui.press('down')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(str(remaining_budget))
+        pyautogui.write(['tab'] * 2)
+        pyautogui.press('Enter')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.press('down')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(str(int_Budget))
+        pyautogui.write(['tab'] * 17)
+        pyautogui.write(str(spent_Coupon))
+        pyautogui.write(['tab'] * 11)
+        pyperclip.copy(input_text)
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.write(['tab'] * 2)
+        pyautogui.write(str(Total_Coupon))
+        pyperclip.copy(' vp')
+        pyautogui.hotkey('ctrl', 'v')
 
 
 root = tk.Tk()
