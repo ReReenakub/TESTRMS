@@ -18,12 +18,23 @@ def autocomplete(event):
     else:
         combo['values'] = games
 
-
 def calculate_packages():
-    df = pd.read_csv('Price.csv')
+    sheet_map = {
+        'PUBG': 'PUBG',
+        'ROV': 'ROV',
+        'VALORANT': 'VALORANT',
+        'FREEFIRE': 'FREEFIRE'
+    }
+
     Game = choice.get()
     input_text = UID.get()
     keyboard.wait('ctrl+c')
+
+    if Game not in sheet_map:
+        print(f"No sheet found for game {Game}")
+        return
+
+    df = pd.read_excel('Price.xlsx', sheet_name=sheet_map[Game])
 
     if Game == 'PUBG':
         def split_and_clean_text(input_text):
@@ -67,8 +78,7 @@ def calculate_packages():
         spent_UC = [int(uc) for uc in spent_UC]
         remaining_budget = int_Budget - budget
 
-        pyautogui.click(x=1226, y=234)
-        pyperclip.copy('A')
+        pyautogui.click(x=1261, y=232)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write(Game)
@@ -93,9 +103,14 @@ def calculate_packages():
         pyautogui.write(' UC')
 
     elif Game == 'ROV':
-        df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['ROV_baht', 'ROV_currency'])
-        prices = df['ROV_baht'].astype(int).values
-        Coupon_Price = df['ROV_currency'].astype(int).values
+        if 'ROV_Bmore' in df.columns and 'ROV_Cmore' in df.columns:
+            df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['ROV_Bmore', 'ROV_Cmore'])
+            prices = df['ROV_Bmore'].astype(int).values
+            Coupon_Price = df['ROV_Cmore'].astype(int).values
+        else:
+            df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['ROV_baht', 'ROV_currency'])
+            prices = df['ROV_baht'].astype(int).values
+            Coupon_Price = df['ROV_currency'].astype(int).values
 
         int_Budget = int(Price.get())
 
@@ -115,8 +130,7 @@ def calculate_packages():
         spent_Coupon = [int(uc) for uc in spent_Coupon]
         remaining_budget = int_Budget - budget
 
-        pyautogui.click(x=1226, y=234)
-        pyperclip.copy('A')
+        pyautogui.click(x=1261, y=232)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write(Game)
@@ -161,8 +175,7 @@ def calculate_packages():
         spent_Coupon = [int(uc) for uc in spent_Coupon]
         remaining_budget = int_Budget - budget
 
-        pyautogui.click(x=1226, y=234)
-        pyperclip.copy('A')
+        pyautogui.click(x=1261, y=232)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write(Game)
@@ -184,6 +197,66 @@ def calculate_packages():
         pyautogui.write(str(Total_Coupon))
         pyperclip.copy(' vp')
         pyautogui.hotkey('ctrl', 'v')
+    elif Game == 'FREEFIRE':
+        def split_uid_and_name(input_text):
+            parts = input_text.split()
+            uid = parts[0]
+            name = " ".join(parts[1:])
+            return uid, name
+
+        try:
+            uid, name = split_uid_and_name(input_text)
+        except ValueError as e:
+            print(e)
+            return
+
+        df = df.replace([np.inf, -np.inf], np.nan).dropna(subset=['FREEFIRE_baht', 'FREEFIRE_currency'])
+        prices = df['FREEFIRE_baht'].astype(int).values
+        Diamond_Price = df['FREEFIRE_currency'].astype(int).values
+
+        int_Budget = int(Price.get())
+
+        sorted_indices = np.argsort(prices)[::-1]
+        sorted_prices = prices[sorted_indices]
+        sorted_Diamond = Diamond_Price[sorted_indices]
+
+        budget = int_Budget
+        spent_Diamond = []
+        Total_Diamond = 0
+        for price, Diamond in zip(sorted_prices, sorted_Diamond):
+            if budget >= price:
+                budget -= price
+                spent_Diamond.append(Diamond)
+                Total_Diamond += Diamond
+
+        spent_Diamond = [int(d) for d in spent_Diamond]
+        remaining_budget = int_Budget - budget
+
+        pyautogui.click(x=1261, y=232)
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(Game)
+        pyautogui.press('down')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(str(remaining_budget))
+        pyautogui.write(['tab'] * 2)
+        pyautogui.press('Enter')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.press('down')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(str(int_Budget))
+        pyautogui.write(['tab'] * 17)
+        pyautogui.write(str(spent_Diamond))
+        pyautogui.write(['tab'] * 11)
+        pyautogui.write(uid)
+        pyautogui.write(['tab'] * 1)
+        pyperclip.copy(name)
+        pyautogui.hotkey('ctrl', 'v')
+        pyautogui.write(['tab'] * 1)
+        pyautogui.write(str(Total_Diamond))
+        pyperclip.copy(' เพชร')
+        pyautogui.hotkey('ctrl', 'v')
+
 
 
 root = tk.Tk()
@@ -194,7 +267,7 @@ UID = tk.StringVar()
 et1 = tk.Entry(font=30, width=30, textvariable=UID)
 et1.grid(row=0, column=1)
 
-games = ["ROV", "PUBG", "VALORANT", "FREEFIRE", "GENSHIN"]
+games = ["ROV", "PUBG", "VALORANT", "FREEFIRE",]
 tk.Label(text='เลือกเกม', padx=10, font=30).grid(row=1, sticky=tk.W)
 choice = tk.StringVar()
 combo = ttk.Combobox(root, width=28, font=30, textvariable=choice)
