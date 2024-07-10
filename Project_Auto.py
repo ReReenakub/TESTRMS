@@ -461,8 +461,6 @@ def calculate_packages():
         pyautogui.hotkey('ctrl', 'v')
 
 
-
-
 root = tk.Tk()
 root.title('บอทเกม')
 root.geometry('400x150')
