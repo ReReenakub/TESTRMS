@@ -6,6 +6,8 @@ import pyautogui
 import pyperclip
 import keyboard
 import time
+import threading
+
 def deletetext():
     et1.delete(0, tk.END)
     et2.delete(0, tk.END)
@@ -460,6 +462,18 @@ def calculate_packages():
         pyperclip.copy(' คูปองส้ม')
         pyautogui.hotkey('ctrl', 'v')
 
+def alt_backspace_action():
+    pyautogui.hotkey('ctrl', 'c')  # กด Ctrl+C เพื่อคัดลอกข้อมูล
+    time.sleep(0.1)  # รอให้ข้อมูลคัดลอกเสร็จ
+    copied_text = pyperclip.paste()  # นำข้อมูลที่คัดลอกมาเก็บในตัวแปร
+    et1.delete(0, tk.END)  # ลบข้อความเดิมในช่อง UID
+    et1.insert(0, copied_text)  # วางข้อความใหม่ในช่อง UID
+
+def check_alt_w():
+    while True:
+        if keyboard.is_pressed('alt') and keyboard.is_pressed('w'):
+            alt_backspace_action()
+            time.sleep(0.3)  # ป้องกันการกดปุ่มซ้ำเกินไป
 
 root = tk.Tk()
 root.title('บอทเกม')
@@ -476,7 +490,7 @@ UID = tk.StringVar()
 et1 = tk.Entry(root, font=15, width=10, textvariable=UID)
 et1.grid(row=0, column=1, sticky=tk.EW, padx=10, pady=5)
 
-games = ["ROV", "PUBG", "VALORANT", "FREEFIRE","HOK","ArenaBreakout","OPM"]
+games = ["ROV", "PUBG", "VALORANT", "FREEFIRE", "HOK", "ArenaBreakout", "OPM"]
 tk.Label(root, text='เลือกเกม', padx=10, font=30).grid(row=1, sticky=tk.W)
 choice = tk.StringVar()
 combo = ttk.Combobox(root, width=28, font=30, textvariable=choice)
@@ -491,5 +505,10 @@ et2.grid(row=2, column=1, sticky=tk.EW, padx=10, pady=5)
 
 tk.Button(root, text='ยืนยัน', font=15, width=10, command=calculate_packages).grid(row=4, column=0, sticky=tk.W, padx=5, pady=5)
 tk.Button(root, text='ลบข้อมูล', font=15, width=10, command=deletetext).grid(row=4, column=1, sticky=tk.E, padx=5, pady=5)
+
+# เริ่มการตรวจจับปุ่ม Alt+W ในเธรดแยก
+thread = threading.Thread(target=check_alt_w)
+thread.daemon = True  # ทำให้เธรดหยุดทำงานเมื่อโปรแกรมหลักปิด
+thread.start()
 
 root.mainloop()
