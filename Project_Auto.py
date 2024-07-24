@@ -490,7 +490,7 @@ UID = tk.StringVar()
 et1 = tk.Entry(root, font=15, width=10, textvariable=UID)
 et1.grid(row=0, column=1, sticky=tk.EW, padx=10, pady=5)
 
-games = ["ROV", "PUBG", "VALORANT", "FREEFIRE", "HOK", "ArenaBreakout", "OPM"]
+games = ["ROV", "PUBG", "VALORANT", "FREEFIRE", "HOK", "ArenaBreakout", "OPM","Gameall"]
 tk.Label(root, text='เลือกเกม', padx=10, font=30).grid(row=1, sticky=tk.W)
 choice = tk.StringVar()
 combo = ttk.Combobox(root, width=28, font=30, textvariable=choice)
