@@ -2,13 +2,12 @@ from itertools import product
 from openpyxl import Workbook
 
 price_value_pairs = [
-    (49, 60, 3),
-    (89, 110, 3),
-    (149, 185, 3),
-    (178, 220, 3),
-    (295, 370, 3),
-    (489, 620, 3),
-    (975, 1240, 10)
+    (124, 500, 3),
+    (249, 1050, 3),
+    (495, 2175, 3),
+    (870, 3850, 3),
+    (1235, 5550, 3),
+    (2480, 11500, 10),
 ]
 
 
@@ -34,7 +33,7 @@ def calculate_combinations(pairs):
 def create_excel_file(details, filename):
     wb = Workbook()
     ws = wb.active
-    ws.title = "ROV"
+    ws.title = "Valorant"
 
     ws.cell(row=1, column=1, value="ราคาบาท")
     ws.cell(row=1, column=2, value="จำนวนที่ได้")
@@ -63,5 +62,5 @@ for price, value, counts in sorted_details:
         [f"{pairs[0]}" for pairs, count in zip(price_value_pairs, counts) if count > 0 for _ in range(count)])
     print(f"ราคา {price} บาท ได้ {value} แพ็ค: {count_detail}")
 
-save_path = r'C:\Users\Core i5\Desktop\Price\ROV_01.xlsx'
+save_path = r'C:\Users\Core i5\Desktop\Price\Valorant_TUN.xlsx'
 create_excel_file(sorted_details, save_path)
