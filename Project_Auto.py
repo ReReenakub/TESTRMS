@@ -6,11 +6,33 @@ import pyautogui
 import pyperclip
 import keyboard
 import time
-import threading
-
 def deletetext():
     et1.delete(0, tk.END)
     et2.delete(0, tk.END)
+
+
+def determine_game(input_text):
+    if '(' in input_text and ')' in input_text:
+        try:
+            name, uid = input_text.split('(')
+            name = name.strip()
+            uid = uid.replace(')', '').strip()
+
+            # ตรวจสอบ UID ว่ามีตัวเลขหรือไม่
+            if uid.isdigit():
+                return 'PUBG'
+        except ValueError:
+            pass
+
+    # ตรวจสอบว่ามีแค่ตัวเลข
+    elif input_text.isdigit():
+        return 'ROV'
+
+    # ตรวจสอบว่ามีตัวเลขและตัวอักษร
+    elif any(char.isdigit() for char in input_text) and ' ' in input_text:
+        return 'FREEFIRE'
+
+    return 'Unknown Game'
 
 def autocomplete(event):
     search_term = combo.get()
@@ -30,8 +52,8 @@ def calculate_packages():
         'ArenaBreakout': 'ARENA',
         'OPM': 'OPM'
     }
-
-    Game = choice.get()
+    UID_value = UID.get()
+    Game = determine_game(UID_value)
     input_text = UID.get()
 
     if Game not in sheet_map:
@@ -41,6 +63,19 @@ def calculate_packages():
     df = pd.read_excel('Price.xlsx', sheet_name=sheet_map[Game])
 
     if Game == 'PUBG':
+        Autopubg = """แอดมินเติม UC เสร็จเรียบร้อยแล้วนะครับ🥰
+
+⏰รอ UC ดีเลย์ประมาณ 5 - 15 นาที ⏰
+👉หากเกินเวลาดีเลย์แล้ว UC ยังไม่เข้าให้แจ้งแอดมินได้เลยนะครับ
+
+📍พร้อมบริการ “เติมเกมผ่อนได้ นานสูงสุด10เดือน”
+ตอกย้ำความคุ้ม รับเงินคืน(Richman Coins) เพื่อสะสมใช้เป็นส่วนลดครั้งถัดไป สูงสุด 25%
+ที่ https://www.richmanshop.com
+
+📍ติดตามกิจกรรมโปรโมชั่น ข่าวสาร สำคัญที่
+https://www.facebook.com/richmanshoptopup
+
+ขอขอบคุณลูกค้าที่ไว้วางใจให้เราดูแล ขอบคุณครับ/ค่ะ"""
         def split_and_clean_text(input_text):
             if '(' in input_text and ')' in input_text:
                 try:
@@ -71,19 +106,29 @@ def calculate_packages():
         sorted_UC = UC_Price[sorted_indices]
 
         budget = int_Budget
-        spent_UC = []
+        UC_count = {}
         Total_UC = 0
         for price, UC in zip(sorted_prices, sorted_UC):
             if budget >= price:
                 budget -= price
-                spent_UC.append(UC)
                 Total_UC += UC
+                if UC in UC_count:
+                    UC_count[UC] += 1
+                else:
+                    UC_count[UC] = 1
 
-        spent_UC = [int(uc) for uc in spent_UC]
+        spent_UC = []
+        for UC, count in UC_count.items():
+            if count > 1:
+                spent_UC.append(f"{UC}*{count}")
+            else:
+                spent_UC.append(str(UC))
+        spent_UC_str = " + ".join(spent_UC)
+
         remaining_budget = int_Budget - budget
         keyboard.wait('ctrl+c')
         time.sleep(0.3)
-        pyautogui.click(x=3672, y=181)
+        pyautogui.click(x=1419, y=71)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write(Game)
@@ -97,7 +142,7 @@ def calculate_packages():
         pyautogui.write(['tab'] * 1)
         pyautogui.write(str(int_Budget))
         pyautogui.write(['tab'] * 17)
-        pyautogui.write(str(spent_UC))
+        pyautogui.write(spent_UC_str)
         pyautogui.write(['tab'] * 11)
         pyautogui.write(uid)
         pyautogui.write(['tab'] * 1)
@@ -105,7 +150,12 @@ def calculate_packages():
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write(str(Total_UC))
-        pyautogui.write(' UC')
+        pyautogui.write(' uc')
+        keyboard.wait('Enter')
+        pyperclip.copy(Autopubg)
+
+
+
 
     elif Game == 'ROV':
         Autorov = """แอดมินเติมคูปองเสร็จเรียบร้อยแล้วนะครับ🥰\n\n⏰รอคูปองดีเลย์ประมาณ 5 - 15 นาที ⏰\n👉หากเกินเวลาดีเลย์แล้วคูปองยังไม่เข้าให้แจ้งแอดมินได้เลยนะครับ\n\n📍พร้อมบริการ “เติมเกมผ่อนได้ นานสูงสุด10เดือน”\nตอกย้ำความคุ้ม รับเงินคืน(Richman Coins) เพื่อสะสมใช้เป็นส่วนลดครั้งถัดไป สูงสุด 25%\nที่ https://www.richmanshop.com\n\n📍ติดตามกิจกรรมโปรโมชั่น ข่าวสาร สำคัญที่\nhttps://www.facebook.com/richmanshoptopup\n\n🎉รับรู้สปอยสกินใหม่ก่อนใครได้ ได้ที่ Youtube ช่อง Richman Shop  🎉\nhttps://www.youtube.com/@Richmanshop\n💞อย่าลืมกดกด Subscribe เพื่อติดตาม Youtube Channel ช่อง Richman Shop ของเราด้วยนะครับ🙏\n\nขอขอบคุณลูกค้าที่ไว้วางใจให้เราดูแล ขอบคุณครับ/ค่ะ"""
@@ -132,7 +182,7 @@ def calculate_packages():
         remaining_budget = int_Budget - budget
         keyboard.wait('ctrl+c')
         time.sleep(0.3)
-        pyautogui.click(x=3672, y=181)
+        pyautogui.click(x=1419, y=71)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write(Game)
@@ -180,7 +230,7 @@ def calculate_packages():
         remaining_budget = int_Budget - budget
         keyboard.wait('ctrl+c')
         time.sleep(0.3)
-        pyautogui.click(x=3721, y=181)
+        pyautogui.click(x=1419, y=71)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write(Game)
@@ -242,7 +292,7 @@ def calculate_packages():
         remaining_budget = int_Budget - budget
         keyboard.wait('ctrl+c')
         time.sleep(0.3)
-        pyautogui.click(x=3672, y=181)
+        pyautogui.click(x=1419, y=71)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write('free')
@@ -310,7 +360,7 @@ def calculate_packages():
         remaining_budget = int_Budget - budget
         keyboard.wait('ctrl+c')
         time.sleep(0.3)
-        pyautogui.click(x=3672, y=181)
+        pyautogui.click(x=1419, y=71)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write('glo')
@@ -377,7 +427,7 @@ def calculate_packages():
         remaining_budget = int_Budget - budget
         keyboard.wait('ctrl+c')
         time.sleep(0.3)
-        pyautogui.click(x=3672, y=181)
+        pyautogui.click(x=1419, y=71)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write('are')
@@ -402,6 +452,19 @@ def calculate_packages():
         pyautogui.write(' Bond')
 
     elif Game == 'OPM':
+        OPMs = """แอดมินเติม คูปองส้ม เสร็จเรียบร้อยแล้วนะครับ🥰
+
+⏰รอ คูปองส้ม  ดีเลย์ประมาณ 5 - 15 นาที ⏰
+👉หากเกินเวลาดีเลย์แล้ว คูปองส้ม  ยังไม่เข้าให้แจ้งแอดมินได้เลยนะครับ
+
+📍พร้อมบริการ “เติมเกมผ่อนได้ นานสูงสุด10เดือน”
+ตอกย้ำความคุ้ม รับเงินคืน(Richman Coins) เพื่อสะสมใช้เป็นส่วนลดครั้งถัดไป สูงสุด 25%
+ที่ https://www.richmanshop.com
+
+📍ติดตามกิจกรรมโปรโมชั่น ข่าวสาร สำคัญที่
+https://www.facebook.com/richmanshoptopup
+
+ขอขอบคุณลูกค้าที่ไว้วางใจให้เราดูแล ขอบคุณครับ/ค่ะ"""
         def split_uid_and_name(input_text):
             parts = input_text.split()
             uid = parts[0]
@@ -437,7 +500,7 @@ def calculate_packages():
         remaining_budget = int_Budget - budget
         keyboard.wait('ctrl+c')
         time.sleep(0.3)
-        pyautogui.click(x=3672, y=181)
+        pyautogui.click(x=1419, y=71)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write('opm')
@@ -456,24 +519,16 @@ def calculate_packages():
         pyautogui.write(uid)
         pyautogui.write(['tab'] * 1)
         pyperclip.copy(name)
+        time.sleep(0.3)
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.write(['tab'] * 1)
         pyautogui.write(str(Total_pongsom))
-        pyperclip.copy(' คูปองส้ม')
+        pyperclip.copy(' คูปอง')
         pyautogui.hotkey('ctrl', 'v')
+        keyboard.wait('Enter')
+        pyperclip.copy(OPMs)
 
-def alt_backspace_action():
-    pyautogui.hotkey('ctrl', 'c')  # กด Ctrl+C เพื่อคัดลอกข้อมูล
-    time.sleep(0.1)  # รอให้ข้อมูลคัดลอกเสร็จ
-    copied_text = pyperclip.paste()  # นำข้อมูลที่คัดลอกมาเก็บในตัวแปร
-    et1.delete(0, tk.END)  # ลบข้อความเดิมในช่อง UID
-    et1.insert(0, copied_text)  # วางข้อความใหม่ในช่อง UID
 
-def check_alt_w():
-    while True:
-        if keyboard.is_pressed('alt') and keyboard.is_pressed('w'):
-            alt_backspace_action()
-            time.sleep(0.3)  # ป้องกันการกดปุ่มซ้ำเกินไป
 
 root = tk.Tk()
 root.title('บอทเกม')
@@ -506,9 +561,6 @@ et2.grid(row=2, column=1, sticky=tk.EW, padx=10, pady=5)
 tk.Button(root, text='ยืนยัน', font=15, width=10, command=calculate_packages).grid(row=4, column=0, sticky=tk.W, padx=5, pady=5)
 tk.Button(root, text='ลบข้อมูล', font=15, width=10, command=deletetext).grid(row=4, column=1, sticky=tk.E, padx=5, pady=5)
 
-# เริ่มการตรวจจับปุ่ม Alt+W ในเธรดแยก
-thread = threading.Thread(target=check_alt_w)
-thread.daemon = True  # ทำให้เธรดหยุดทำงานเมื่อโปรแกรมหลักปิด
-thread.start()
+
 
 root.mainloop()
