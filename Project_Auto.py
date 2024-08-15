@@ -9,8 +9,6 @@ import time
 def deletetext():
     et1.delete(0, tk.END)
     et2.delete(0, tk.END)
-
-
 def determine_game(input_text):
     if '(' in input_text and ')' in input_text:
         try:
@@ -52,9 +50,8 @@ def calculate_packages():
         'ArenaBreakout': 'ARENA',
         'OPM': 'OPM'
     }
-    UID_value = UID.get()
-    Game = determine_game(UID_value)
     input_text = UID.get()
+    Game = determine_game(input_text)
 
     if Game not in sheet_map:
         print(f"No sheet found for game {Game}")
