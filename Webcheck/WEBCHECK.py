@@ -13,6 +13,8 @@ options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(options=options)
 
 driver.get("https://www.codashop.com/th-th/valorant")
+time.sleep(1)
+driver.find_element(By.XPATH, '//*[@id="paymentChannel_342"]').click()
 
 UID = StringVar()
 Label(padx=10, font=30).grid(row=0, sticky=W)
@@ -42,21 +44,17 @@ def calculate():
     if currency == 'VALORANT':
         element = driver.find_element(By.ID, "userId")
         element.send_keys(amont)
-        time.sleep(1)
-        driver.find_element(By.XPATH, '//*[@id="paymentChannel_342"]').click()
-        time.sleep(1)
+        time.sleep(1.5)
         driver.find_element(By.XPATH, '//*[@id="mdn-submit"]').click()
-        time.sleep(3)
-        try:
-            driver.find_element(By.CLASS_NAME, 'order-summary__content')
-            time.sleep(2)
-            driver.find_element(By.XPATH, '//*[@id="app"]/div/div[2]/main/div[2]/div[1]/div/div/div[1]/div/div').click()
-        except:
-            pass
-
-        # Clear the userId input field
+        time.sleep(1.5)
+        driver.find_element(By.CLASS_NAME, 'order-summary__content')
+        time.sleep(1)
+        if driver.find_elements(By.XPATH, '//*[@id="app"]/div/div[2]/main/div[2]/div[1]/div/div/div[1]/div/div'):
+            driver.find_element(By.XPATH,'//*[@id="app"]/div/div[2]/main/div[2]/div[1]/div/div/div[1]/div/div').click()
+        else:
+            time.sleep(1.5)
+            driver.find_element(By.XPATH, '//*[@id="app"]/div/div[4]/div/div[3]/button').click()
         element.clear()
-
 
 Button(text='เรียบร้อย', font=30, width=15, command=calculate).grid(row=4, column=1, sticky=W)
 Button(text='ลบข้อมูล', font=30, width=15, command=deletetext).grid(row=4, column=1, sticky=E)

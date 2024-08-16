@@ -1,13 +1,17 @@
-import pyautogui
 import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import pyperclip
 
-print("ขยับไปที่ ชื่อลูกค้าในไลน์")
-time.sleep(5)
-position1 = pyautogui.position()
+options = webdriver.ChromeOptions()
+options.add_experimental_option("detach", True)
+driver = webdriver.Chrome(options=options)
 
-print("ขยับเมาส์ไปที่ ชื่อลูกค้าในโปรแกรมคิว")
-time.sleep(5)
-position2 = pyautogui.position()
-#แสดงทั้งสองตำแหน่ง
-print(f"ตำแหน่งชื่อลูกค้า: {position1}")
-print(f"ตำแหน่งชื่อลูกค้าในโปรแกรมคิว: {position2}")
+driver.get("https://bms.rmsoperation.com/")
+time.sleep(10)
+element = driver.find_element(By.ID, "username")
+element.send_keys('rpchat11@mailoper.com')
+time.sleep(0.5)
+element2 = driver.find_element(By.ID, "password")
+element2.send_keys('admin@123')
+driver.find_element(By.XPATH, '//*[@id="login_area"]/div/div/div/div/form/div[3]/button').click()
