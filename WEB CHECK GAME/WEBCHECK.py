@@ -12,6 +12,7 @@ options = webdriver.ChromeOptions()
 options.add_experimental_option("detach", True)
 driver = webdriver.Chrome(options=options)
 
+
 driver.get("https://www.midasbuy.com/midasbuy/th/buy/pubgm")
 time.sleep(1)
 driver.find_element(By.XPATH, '//*[@id="paymentChannel_342"]').click()
@@ -23,7 +24,7 @@ Entry(font=30, width=30, textvariable=UID).grid(row=0, column=1)
 choice = StringVar(value='เลือกเกม')
 Label(text='ใส่ UID เกม', padx=10, font=30).grid(row=0, column=0)
 combo = ttk.Combobox(width=30, font=30, textvariable=choice)
-combo['values'] = ('VALORANT',)
+combo['values'] = ('PUBG',)
 combo.grid(row=1, column=1)
 
 Price = StringVar()
@@ -41,7 +42,7 @@ def calculate():
     currency = choice.get()
     currency2 = Price.get()
 
-    if currency == 'VALORANT':
+    if currency == 'PUBG':
         element = driver.find_element(By.ID, "userId")
         element.send_keys(amont)
         time.sleep(1.5)
